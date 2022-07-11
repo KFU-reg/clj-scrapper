@@ -29,6 +29,26 @@
        "&p_sex_code=" (sex {:male 11, :female 12})))
 
 (generate-url 1443 :sem1 :male 22)
+(declare parse-class)
+(defn parse-classes
+  [dom]
+  (->> ;; Note: This will contain elements outside the table
+    ;;
+    (html/select dom [:tr])
+    (map :content)
+    ;; 27 is the golder number!
+    ;; jk. rows with 27 thingies are classes
+    (filter #(= 27 (count %)))
+    (map parse-class)
+    ;; this removes `nil`, caused by table haeders
+    ;; see [[parse-class]]
+    (filter identity)
+    ;; some classes have same CRN but different days.
+    ;; merge days only!
+    ; merge-duplicates))
+    identity))
+
+
 (defn- html-text-trim [dom] (s/trim (html/text dom)))
 (defn- nth-html
   "Trimmed text nth node as text"
@@ -59,8 +79,9 @@
 (defn- allowed [text] (s/split text #"\s"))
 
 (defn parse-class
-  [class-dom]
-  (let [code (nth-html class-dom 0)
+  [class-row]; technically, class-dom is a seq of td (table data)
+  (let [class-dom (html/select class-row [:td])
+        code (nth-html class-dom 0)
         crn (nth-html class-dom 1)
         section (nth-html class-dom 2)
         instructor (nth-html class-dom 9)
@@ -70,15 +91,21 @@
         allowed-colleges (allowed (nth-html class-dom 11))
         allowed-majors (allowed (nth-html class-dom 12))
         availability (available (nth-html class-dom 3))]
-    {:code code,
-     :crn crn,
-     :section section,
-     :instructor instructor,
-     :days days,
-     :starting-time starting-time,
-     :ending-time ending-time,
-     :allowed-colleges allowed-colleges,
-     :allowed-majors allowed-majors,
-     :availability availability}))
+    ;;RANT! Table headers are assigned the same as table data
+    ;; website dev should have used "theader" :(
+    ;;
+    ;; If crn = "CRN" and not a number (as a string),
+    ;; then send `nil` to be filtered later
+    (if (= crn "CRN")
+      nil
+      {:code code,
+       :crn crn,
+       :section section,
+       :instructor instructor,
+       :days days,
+       :starting-time starting-time,
+       :ending-time ending-time,
+       :allowed-colleges allowed-colleges,
+       :allowed-majors allowed-majors,
+       :availability availability})))
 
-(parse-class class-td)
