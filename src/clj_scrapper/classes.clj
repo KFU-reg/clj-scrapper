@@ -76,7 +76,7 @@
 (defn- available
   [text]
   ({"غير متاحه" :not-available, "متاحه" :available, "ممتلئة" :full} text))
-(defn- allowed [text] (s/split text #"\s"))
+(defn- allowed [text] (if (empty? text) [] (s/split text #"\s")))
 
 (defn parse-class
   [class-row]; technically, class-dom is a seq of td (table data)
