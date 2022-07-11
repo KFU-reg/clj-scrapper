@@ -56,6 +56,7 @@
 (defn- available
   [text]
   ({"غير متاحه" :not-available, "متاحه" :available, "ممتلئة" :full} text))
+(defn- allowed [text] (s/split text #"\s"))
 
 (defn parse-class
   [class-dom]
@@ -66,8 +67,8 @@
         days (days (nth-html class-dom 6))
         starting-time (timestamp :start (nth-html class-dom 8))
         ending-time (timestamp :end (nth-html class-dom 8))
-        allowed-colleges (nth-html class-dom 11); TODO: to vec
-        allowed-majors (nth-html class-dom 12); TODO: to vec
+        allowed-colleges (allowed (nth-html class-dom 11))
+        allowed-majors (allowed (nth-html class-dom 12))
         availability (available (nth-html class-dom 3))]
     {:code code,
      :crn crn,
