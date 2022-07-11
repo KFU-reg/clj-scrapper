@@ -37,9 +37,9 @@
 (defn- timestamp
   "Returns timestamp in 0000 form, e.g. 1430 (i.e. 2:30pm)
   `type` can be `:start` or `end`
-  `dom` should be the :td element directly"
-  [type dom]
-  ((type {:start first, :end second}) (s/split (html-text-trim dom) #" *- *")))
+  `stamp` should be the string '1400 - 1700' (this is jus an exmaple)"
+  [type stamp]
+  ((type {:start first, :end second}) (s/split stamp #" *- *")))
 
 (defn- days
   [dom]
@@ -64,11 +64,11 @@
         section (nth-html class-dom 2)
         instructor (nth-html class-dom 9)
         days (days (nth-html class-dom 6))
-        starting-time (timestamp :start (nth class-dom 8))
-        ending-time (timestamp :end (nth class-dom 8))
+        starting-time (timestamp :start (nth-html class-dom 8))
+        ending-time (timestamp :end (nth-html class-dom 8))
         allowed-colleges (nth-html class-dom 11); TODO: to vec
         allowed-majors (nth-html class-dom 12); TODO: to vec
-        available (available (nth-html class-dom 3))]
+        availability (available (nth-html class-dom 3))]
     {:code code,
      :crn crn,
      :section section,
@@ -78,4 +78,6 @@
      :ending-time ending-time,
      :allowed-colleges allowed-colleges,
      :allowed-majors allowed-majors,
-     :availability available}))
+     :availability availability}))
+
+(parse-class class-td)
