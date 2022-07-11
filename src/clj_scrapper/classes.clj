@@ -28,7 +28,6 @@
        "&p_col_code=" code
        "&p_sex_code=" (sex {:male 11, :female 12})))
 
-(generate-url 1443 :sem1 :male 22)
 (declare parse-class)
 (defn parse-classes
   [dom]
