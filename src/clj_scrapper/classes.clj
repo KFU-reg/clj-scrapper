@@ -45,8 +45,10 @@
     ;; some classes have same CRN but different days.
     ;; merge days only!
     (group-by :crn)
-    vals
+    vals; keys are CRN, we need the grouped classes
+    ;; each group gets `reduce`d to one class
     (map #(reduce merge-days-classes %))
+    ;; flattens the [({...}), ({...})] to [{...}, {...}]
     flatten))
 
 (defn- merge-days-classes;
