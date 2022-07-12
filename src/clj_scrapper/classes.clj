@@ -77,19 +77,20 @@
   ({"غير متاحه" :not-available, "متاحه" :available, "ممتلئة" :full} text))
 (defn- allowed [text] (if (empty? text) [] (s/split text #"\s")))
 
+;!zprint {:format :skip}
 (defn parse-class
   [class-row]; technically, class-dom is a seq of td (table data)
-  (let [class-dom (html/select class-row [:td])
-        code (nth-html class-dom 0)
-        crn (nth-html class-dom 1)
-        section (nth-html class-dom 2)
-        instructor (nth-html class-dom 9)
-        days (days (nth-html class-dom 6))
-        starting-time (timestamp :start (nth-html class-dom 8))
-        ending-time (timestamp :end (nth-html class-dom 8))
-        allowed-colleges (allowed (nth-html class-dom 11))
-        allowed-majors (allowed (nth-html class-dom 12))
-        availability (available (nth-html class-dom 3))]
+  (let [class-dom        (html/select class-row [:td])
+        code             (nth-html class-dom 0)
+        crn              (nth-html class-dom 1)
+        section          (nth-html class-dom 2)
+        instructor       (nth-html class-dom 9)
+        days             (days      (nth-html class-dom 6))
+        starting-time    (timestamp :start (nth-html class-dom 8))
+        ending-time      (timestamp :end   (nth-html class-dom 8))
+        allowed-colleges (allowed   (nth-html class-dom 11))
+        allowed-majors   (allowed   (nth-html class-dom 12))
+        availability     (available (nth-html class-dom 3))]
     ;;RANT! Table headers are assigned the same as table data
     ;; website dev should have used "theader" :(
     ;;
@@ -97,14 +98,14 @@
     ;; then send `nil` to be filtered later
     (if (= crn "CRN")
       nil
-      {:code code,
-       :crn crn,
-       :section section,
-       :instructor instructor,
-       :days days,
-       :starting-time starting-time,
-       :ending-time ending-time,
-       :allowed-colleges allowed-colleges,
-       :allowed-majors allowed-majors,
-       :availability availability})))
+      {:code              code,
+       :crn               crn,
+       :section           section,
+       :instructor        instructor,
+       :days              days,
+       :starting-time     starting-time,
+       :ending-time       ending-time,
+       :allowed-colleges  allowed-colleges,
+       :allowed-majors    allowed-majors,
+       :availability      availability})))
 
