@@ -44,9 +44,14 @@
     (filter identity)
     ;; some classes have same CRN but different days.
     ;; merge days only!
-    ; merge-duplicates))
-    identity))
+    (group-by :crn)
+    vals
+    (map #(reduce merge-days-classes %))
+    flatten))
 
+(defn- merge-days-classes;
+  ([a] a)
+  ([a b] (update a :days into (:days b))))
 
 (defn- html-text-trim [dom] (s/trim (html/text dom)))
 (defn- nth-html
@@ -70,6 +75,8 @@
              \خ :thursday,
              \ج :friday,
              \س :saturday})
+       ;; remove `nil` days caused by spaces
+       (filter identity)
        vec))
 
 (defn- available
@@ -96,7 +103,7 @@
     ;;
     ;; If crn = "CRN" and not a number (as a string),
     ;; then send `nil` to be filtered later
-    (if (= crn "CRN")
+    (if (re-find #".*CRN.*" crn) 
       nil
       {:code              code,
        :crn               crn,
