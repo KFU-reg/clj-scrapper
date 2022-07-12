@@ -28,15 +28,15 @@
        "&p_col_code=" code
        "&p_sex_code=" (sex {:male 11, :female 12})))
 
-(declare parse-class)
+(declare parse-class merge-days-classes)
 (defn parse-classes
   [dom]
-  (->> ;; Note: This will contain elements outside the table
-    ;;
+  (->>
+    ;; Note: This will contain elements outside the table
     (html/select dom [:tr])
     (map :content)
-    ;; 27 is the golder number!
-    ;; jk. rows with 27 thingies are classes
+    ;; 27 is the golden number! jk. rows
+    ;; with 27 thingies are classes, others are table headers
     (filter #(= 27 (count %)))
     (map parse-class)
     ;; this removes `nil`, caused by table haeders
