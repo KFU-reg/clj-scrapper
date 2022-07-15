@@ -70,6 +70,9 @@
 (defn- days
   [dom]
   (->> dom
+       ; Removes \n and other blanks that would other wise cause a `nil`
+       ; in the  map
+       (remove (comp clojure.string/blank? str))
        (map {\ح :sunday,
              \ن :monday,
              \ث :tuesday,
@@ -77,8 +80,6 @@
              \خ :thursday,
              \ج :friday,
              \س :saturday})
-       ;; remove `nil` days caused by spaces
-       (filter identity)
        vec))
 
 (defn- available
