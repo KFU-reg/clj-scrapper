@@ -5,4 +5,4 @@
 (defn get-dom
   "Given a URL, it will return html node"
   [url]
-  (html/html-snippet (:body @(http/get url {:insecure? true}))))
+  (html/html-snippet (slurp url)))
