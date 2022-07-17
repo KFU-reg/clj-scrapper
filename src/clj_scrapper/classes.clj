@@ -60,6 +60,7 @@
   "Trimmed text nth node as text"
   [dom n]
   (html-text-trim (nth dom n)))
+(defn- code [text] (clojure.string/replace text "-" ""))
 (defn- timestamp
   "Returns timestamp in 0000 form, e.g. 1430 (i.e. 2:30pm)
   `type` can be `:start` or `end`
@@ -91,7 +92,7 @@
 (defn parse-class
   [class-row]; technically, class-dom is a seq of td (table data)
   (let [class-dom        (html/select class-row [:td])
-        code             (nth-html class-dom 0)
+        code             (code (nth-html class-dom 0))
         crn              (nth-html class-dom 1)
         section          (nth-html class-dom 2)
         instructor       (nth-html class-dom 9)
