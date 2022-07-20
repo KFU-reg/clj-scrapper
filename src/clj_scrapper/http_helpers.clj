@@ -1,6 +1,7 @@
 (ns clj-scrapper.http-helpers
   (:require [net.cgrand.enlive-html :as html]
-            [org.httpkit.client :as http]))
+            [clojure.string :as s]))
+
 
 (defn get-dom
   "Given a URL, it will return html node"
