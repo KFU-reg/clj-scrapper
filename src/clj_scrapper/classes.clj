@@ -120,3 +120,5 @@
        :allowed-majors    allowed-majors,
        :availability      availability})))
 
+
+(defn parse-classes-from-url [url] (parse-classes (http-helpers/get-dom url)))
