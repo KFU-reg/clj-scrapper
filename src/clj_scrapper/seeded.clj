@@ -54,19 +54,54 @@
   [code classes]
   (filter #(= code (:code %)) classes))
 
-(defn- seed1
+(defn- seed1course
   "seeds one course with [classes]
   Could return empty list `()` incase
   there are no classes for a certain course"
   [{code :code, :as course} classes]
   (->> ; We start by classes of a course
     (filter-classes code classes)
-    ; then merge data from course with each class
-    (map #(merge course %))))
+    ; `:code` already exists in `plan`. Removing duplicates
+    (map #(dissoc % :code))
+    ; then add data from course with each class
+    (assoc course :classes)))
 
 
-(defn seed
-  "seed all courses in a [plan] with [classes]"
+(defn- seed1plan
+  "seed all courses in a [plan] with [classes]
+  Example Return:
+  ```
+  [
+   {
+      :code '0999990',
+      :name 'Physics 1',
+      :credits 3,
+      :pre-req (),
+      :co-req (),
+      :semster 0
+      :classes ({:availability :not-available,
+                 :allowed-majors [],
+                 :allowed-colleges ['22'],
+                 :section '03',
+                 :days [:wednesday],
+                 :instructor 'زياد نايف شطناوي',
+                 :starting-time '0800',
+                 :ending-time '0950',
+                 :crn '39170'}
+
+                 {...}
+      )
+   }
+  ...
+  ]
+  ```
+  "
   [plan classes] ;
   (remove empty? ; lists `()` caused by `seed1`
-    (map #(seed1 % classes) plan)))
+    (map #(seed1course % classes) plan)))
+
+
+(defn seed-plans
+  "For return, See: [[seed1plan]]"
+  [plans classes]
+  (map #(seed1plan % classes) plans))
