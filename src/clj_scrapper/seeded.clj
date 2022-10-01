@@ -47,12 +47,20 @@
 
 (ns clj-scrapper.seeded (:gen-class))
 
+(def classes [{:code "999"} {:code "998"}])
+(def code "99X")
+
+(filter-classes code classes)
+
+
 (defn- filter-classes
   "Simply returns classes with matching `code`"
-  ; TODO: Match codes with "X" example: "069XXX"
-  ;       It should match as a wildcard "*"
   [code classes]
-  (filter #(= code (:code %)) classes))
+  ; Match codes with "X" example: "069XXX"
+  ; It should match as a wildcard "*"
+  (let [regex-s (clojure.string/replace code #"X" ".")
+        regex-p (re-pattern regex-s)]
+    (filter #(re-matches regex-p (:code %)) classes)))
 
 (defn- seed1course
   "seeds one course with [classes]
