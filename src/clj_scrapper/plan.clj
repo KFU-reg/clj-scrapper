@@ -14,7 +14,8 @@
 
 (ns clj-scrapper.plan
   (:require [net.cgrand.enlive-html :as html]
-            [clj-scrapper.http-helpers :as http-helpers])
+            [clj-scrapper.http-helpers :as http-helpers]
+            [clojure.string])
   (:gen-class))
 
 (declare parse-plan parse-semster parse-course)
@@ -26,8 +27,6 @@
   "
   [url]
   (parse-plan (http-helpers/get-dom url)));
-
-
 
 (defn parse-plan
   "Parses a Plan, directly from an html-snippet
@@ -62,13 +61,33 @@
        ; Adding the semster number
        (map #(assoc % :semster i))))
 
+(defn- parse-requisites
+  [node requisite-type]
+  (let [req-string (requisite-type {:co-req "متزامن", :pre-req "غير متزامن"})
+        req-regex (re-pattern req-string)]
+    (->> (:content node)
+         (map html/html-snippet)
+         (map #(html/select % [:div]))
+         (map html/texts)
+         flatten
+         (filter #(re-find req-regex %))
+         ; "  [0817-144] تفاضل وتكامل 1 - متزامن  "
+         (map clojure.string/trim)
+         ; "[0817-144] تفاضل وتكامل 1 - متزامن"
+         (map #(re-find #"\[[0-9]*-[0-9]*\]" %))
+         ; "[0817-144]"
+         (map #(clojure.string/replace % #"(\[|\]|-)" ""))
+         ; "0817144"
+         identity)))
+
+
 (defn- parse-course
   [course]
   (let [code (html/text (nth course 0))
         name (html/text (nth course 2))
         credits (Integer/parseInt (html/text (nth course 3)))
-        pre-req () ; TODO: Pre Reqs
-        co-req ()] ;TODO: Co Reqs
+        pre-req (parse-requisites (nth course 4) :pre-req)
+        co-req (parse-requisites (nth course 4) :co-req)]
     {:code code,
      :name name,
      :credits credits,
