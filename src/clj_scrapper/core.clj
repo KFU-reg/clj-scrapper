@@ -57,10 +57,11 @@
             plan-names
             seeded-plans)]
     ; print output path.
-    (map (comp println :output-path) seeded-plans-with-output-path)
+    (dorun (map (comp println :output-path) seeded-plans-with-output-path))
     ; and save to the output path.
-    (map (fn [{output_path :output-path, plan :plan}]
-           ; mkdir -p
-           (io/make-parents output_path)
-           (spit output_path (json/write-str plan)))
-      seeded-plans-with-output-path)))
+    (dorun (map (fn [{output_path :output-path, plan :plan}]
+                  ; mkdir -p
+                  (io/make-parents output_path)
+                  (println "Saving to" output_path)
+                  (spit output_path (json/write-str plan)))
+             seeded-plans-with-output-path))))
