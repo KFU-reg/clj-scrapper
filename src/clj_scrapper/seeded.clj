@@ -47,11 +47,6 @@
 
 (ns clj-scrapper.seeded (:gen-class))
 
-(def classes [{:code "999"} {:code "998"}])
-(def code "99X")
-
-(filter-classes code classes)
-
 
 (defn- filter-classes
   "Simply returns classes with matching `code`"
