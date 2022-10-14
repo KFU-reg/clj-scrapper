@@ -4,7 +4,7 @@
     [clj-scrapper.plan :as plan]
     [clj-scrapper.classes :as classes]
     [clj-scrapper.settings :as settings]
-    [clojure.java.io :as io]
+    [clj-scrapper.io-helpers :as io-helpers]
     [clj-scrapper.seeded :as seed]
     [clojure.data.json :as json])
   (:gen-class))
@@ -22,7 +22,7 @@
   (shutdown-agents))
 
 (defn download>seed>save
-  "`output_path` is the output path to save, duh...
+  "`output-path` is the output path to save, duh...
   `gender` can be `:male` or `:female`.
   Returns a seq of seeded plans.
   see: [[clj-scrapper.seeded/seed-plans]]
@@ -32,7 +32,7 @@
   3. Convert to JSON
   4. Save to `output_path`
   "
-  [output_path gender]
+  [output-path gender]
   (let [classes (->> (settings/get-department-numbers)
                      ; [22 10 32]
                      (map #(settings/generate-url gender %))
@@ -49,18 +49,7 @@
                    #_.)
         seeded-plans (seed/seed-plans plans classes)
         plan-names (settings/plan-names gender); used in output path
-        seeded-plans-with-output-path
-          ; mapped to [{:output-path  "./output/male/mechincal-engineering.json"
-          ;             :plan [{...}, {...}]}]
-          (map #(hash-map :output-path (str output_path %1 ".json") :plan %2)
-            plan-names
-            seeded-plans)]
-    ; print output path.
-    (dorun (map (comp println :output-path) seeded-plans-with-output-path))
+        output-paths (map #(str output-path %1 ".json") plan-names)]
     ; and save to the output path.
-    (dorun (map (fn [{output_path :output-path, plan :plan}]
-                  ; mkdir -p
-                  (io/make-parents output_path)
-                  (println "Saving to" output_path)
-                  (spit output_path (json/write-str plan)))
-             seeded-plans-with-output-path))))
+    (dorun
+      (map io-helpers/save-data-to-path-as-json output-paths seeded-plans))))
