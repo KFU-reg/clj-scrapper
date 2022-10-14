@@ -1,6 +1,7 @@
-(ns clj-scrapper.http-helpers
+(ns clj-scrapper.io-helpers
   (:require [net.cgrand.enlive-html :as html]
             [clojure.string :as s]
+            [clojure.data.json :as json]
             [clojure.java.io :as io]))
 
 
@@ -27,3 +28,15 @@
   [url]
   (println (str "Getting " url))
   (html/html-snippet (caching-slurp url)))
+
+
+(defn save-data-to-path-as-json
+  [output_path plan]
+  ; mkdir -p
+  (io/make-parents output_path)
+  (println "Saving to" output_path)
+  (spit output_path (json/write-str plan)))
+
+;; (defn save-data-to-path-as-json
+;;   [output_paths plans]
+;;   (dorun (map save-single-data-to-path-as-json output_paths plans)))

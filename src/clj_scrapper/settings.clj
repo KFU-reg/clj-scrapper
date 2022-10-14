@@ -1,23 +1,28 @@
-(ns clj-scrapper.settings)
+(ns clj-scrapper.settings
+  (:require [clj-scrapper.classes :as classes]))
+
+(def current-year 1443)
+(def current-sem :sem1)
 
 (def ^:private ^:const department-numbers
-  #{"10" ; الطب
-    "31" ; العلوم الطبية التطبيقية
-    "34" ; الاسنان
-    "20" ; الصيدلة الاكلينيكية
-    "03" ; الطب البيطيري
-    "22" ; Engineering
-    "09" ; علوم الحاسب وتقنية المعلومات
-    "06" ; إدارة الأعمال
-    "08" ; العلوم
-    "01" ; العلوم الزراعية والاغذية
-    "02" ; التربية
-    "27" ; الحقوق
-    "74" ; الآداب
-    "30" ; الدراسات التطبيقية وخدمة المجمتع
-    "28" ;  الدراسات التطبيقية وخدمة المجمتع فرع بقيق
-    "00"}) ; مركز اللغة الانجيليزية
+  {"10" "الطب",
+   "31" "العلوم الطبية التطبيقية",
+   "34" "الاسنان",
+   "20" "الصيدلة الاكلينيكية",
+   "03" "الطب البيطيري",
+   "22" "الهندسة",
+   "09" "علوم الحاسب وتقنية المعلومات",
+   "06" "إدارة الأعمال",
+   "08" "العلوم",
+   "01" "العلوم الزراعية والاغذية",
+   "02" "التربية",
+   "27" "الحقوق",
+   "74" "الآداب",
+   "30" "الدراسات التطبيقية وخدمة المجمتع",
+   "28" " الدراسات التطبيقية وخدمة المجمتع فرع بقيق",
+   "00" "مركز اللغة الانجيليزية"})
 
+(def generate-url (partial classes/generate-url current-year current-sem))
 
 (def ^:private ^:const plans
   [{:name "Electrical Engineering",
@@ -36,7 +41,8 @@
     :college :Engineering,
     :gender :male}])
 
-(defn get-department-numbers [] department-numbers)
+(defn get-department-numbers [] (keys department-numbers))
+(defn get-department-names [] (vals department-numbers))
 
 ; basically, converts `:all` to two entries, `:male` and `:female`
 (defn get-plans
@@ -100,3 +106,5 @@
   `gender` can be `:male` or `:female`"
   [gender];
   (map :name (filter #(= (:gender %) gender) (get-plans))))
+
+

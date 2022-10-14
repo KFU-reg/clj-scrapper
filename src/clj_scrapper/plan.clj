@@ -14,7 +14,7 @@
 
 (ns clj-scrapper.plan
   (:require [net.cgrand.enlive-html :as html]
-            [clj-scrapper.http-helpers :as http-helpers]
+            [clj-scrapper.io-helpers :as io-helpers]
             [clojure.string])
   (:gen-class))
 
@@ -26,7 +26,7 @@
   see also `parse-plan`
   "
   [url]
-  (parse-plan (http-helpers/get-dom url)));
+  (parse-plan (io-helpers/get-dom url)));
 
 (defn parse-plan
   "Parses a Plan, directly from an html-snippet
@@ -63,7 +63,7 @@
 
 (defn- parse-requisites
   [node requisite-type]
-  (let [req-string (requisite-type {:co-req "متزامن", :pre-req "غير متزامن"})
+  (let [req-string (requisite-type {:co-req "- متزامن", :pre-req "غير متزامن"})
         req-regex (re-pattern req-string)]
     (->> (:content node)
          (map html/html-snippet)

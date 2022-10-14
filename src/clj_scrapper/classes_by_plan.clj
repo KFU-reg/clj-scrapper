@@ -1,4 +1,4 @@
-(ns clj-scrapper.core
+(ns clj-scrapper.classes-by-plan
   (:require ;[net.cgrand.enlive-html :as html]
             ;[org.httpkit.client :as http]
     [clj-scrapper.plan :as plan]
@@ -16,11 +16,10 @@
 (defn -main
   " ... "
   [& _args]
-  (download>seed>save "./output/male/" :male)
-  (download>seed>save "./output/female/" :female)
-  (spit               "./output/metadata.json" (json/write-str (settings/generate-metadata))))
-
-(def generate-url (partial classes/generate-url 1443 :sem1))
+  (download>seed>save "./output/by_plan/male/" :male)
+  (download>seed>save "./output/by_plan/female/" :female)
+  (spit               "./output/by_plan/metadata.json" (json/write-str (settings/generate-metadata)))
+  (shutdown-agents))
 
 (defn download>seed>save
   "`output_path` is the output path to save, duh...
@@ -36,7 +35,7 @@
   [output_path gender]
   (let [classes (->> (settings/get-department-numbers)
                      ; [22 10 32]
-                     (map #(generate-url gender %))
+                     (map #(settings/generate-url gender %))
                      ; ["https://example.com/1" "https://..."]
                      (pmap classes/parse-classes-from-url)
                      ; [[{:code "99" :name "Physics" ...}, {...}, ...], [{}]]

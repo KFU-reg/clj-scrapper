@@ -1,6 +1,6 @@
 (ns clj-scrapper.classes
   (:require [net.cgrand.enlive-html :as html]
-            [clj-scrapper.http-helpers :as http-helpers]
+            [clj-scrapper.io-helpers :as io-helpers]
             [clojure.string :as s]))
 
 (def base-url "https://banner.kfu.edu.sa:7710/KFU/ws?")
@@ -107,7 +107,7 @@
     ;;
     ;; If crn = "CRN" and not a number (as a string),
     ;; then send `nil` to be filtered later
-    (if (re-find #".*CRN.*" crn) 
+    (if (re-find #".*CRN.*" crn)
       nil
       {:code              code,
        :crn               crn,
@@ -121,4 +121,4 @@
        :availability      availability})))
 
 
-(defn parse-classes-from-url [url] (parse-classes (http-helpers/get-dom url)))
+(defn parse-classes-from-url [url] (parse-classes (io-helpers/get-dom url)))

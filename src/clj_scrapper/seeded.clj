@@ -108,3 +108,4 @@
   "For return, See: [[seed1plan]]"
   [plans classes]
   (map #(seed1plan % classes) plans))
+

@@ -6,7 +6,10 @@
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [enlive "1.1.6"]
                  [org.clojure/data.json "2.4.0"]]
-  :main ^:skip-aot clj-scrapper.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all,
-                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})
+                       :jvm-opts ["-Dclojure.compiler.direct-linking=true"]},
+             :classes-by-plan {:main clj-scrapper.classes-by-plan},
+             :classes-by-college {:main clj-scrapper.classes-by-college}}
+  :aliases {"classes-by-plan" ["with-profile" "classes-by-plan" "run"],
+            "classes-by-college" ["with-profile" "classes-by-college" "run"]})

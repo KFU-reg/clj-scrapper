@@ -10,7 +10,15 @@ Download from http://example.com/FIXME.
 
 FIXME: explanation
 
-    $ java -jar clj-scrapper-0.1.0-standalone.jar [args]
+For now,	
+
+```sh
+   	❯ lein classes-by-college
+   	❯ lein classes-by-plan
+
+```
+
+	
 
 ## Options
 
