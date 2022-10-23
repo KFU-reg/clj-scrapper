@@ -51,6 +51,7 @@
     ;; flattens the [({...}), ({...})] to [{...}, {...}]
     flatten))
 
+; days are sets, so no need to worry about conflicts
 (defn- merge-days-classes;
   ([a] a)
   ([a b] (update a :days into (:days b))))
@@ -68,20 +69,21 @@
   [type stamp]
   ((type {:start first, :end second}) (s/split stamp #" *- *")))
 
+;!zprint {:format :skip}
 (defn- days
   [dom]
   (->> dom
        ; Removes \n and other blanks that would other wise cause a `nil`
        ; in the  map
        (remove (comp clojure.string/blank? str))
-       (map {\ح :sunday,
-             \ن :monday,
-             \ث :tuesday,
-             \ر :wednesday,
-             \خ :thursday,
-             \ج :friday,
-             \س :saturday})
-       vec))
+       (map {\ح #_:sunday    1,
+             \ن #_:monday    2,
+             \ث #_:tuesday   3,
+             \ر #_:wednesday 4,
+             \خ #_:thursday  5 ,
+             \ج #_:friday    6,
+             \س #_:saturday  7})
+       set))
 
 (defn- available
   [text]
@@ -94,14 +96,16 @@
   (let [class-dom        (html/select class-row [:td])
         code             (code (nth-html class-dom 0))
         crn              (nth-html class-dom 1)
+        name             (nth-html class-dom 4) ;i.e class name
         section          (nth-html class-dom 2)
         instructor       (nth-html class-dom 9)
         days             (days      (nth-html class-dom 6))
         starting-time    (timestamp :start (nth-html class-dom 8))
         ending-time      (timestamp :end   (nth-html class-dom 8))
+        time             (str starting-time "-" ending-time)
         allowed-colleges (allowed   (nth-html class-dom 11))
         allowed-majors   (allowed   (nth-html class-dom 12))
-        availability     (available (nth-html class-dom 3))]
+        available     (available (nth-html class-dom 3))]
     ;;RANT! Table headers are assigned the same as table data
     ;; website dev should have used "theader" :(
     ;;
@@ -111,14 +115,14 @@
       nil
       {:code              code,
        :crn               crn,
+       :name              name,
        :section           section,
        :instructor        instructor,
        :days              days,
-       :starting-time     starting-time,
-       :ending-time       ending-time,
+       :time              time
        :allowed-colleges  allowed-colleges,
        :allowed-majors    allowed-majors,
-       :availability      availability})))
+       :available      available})))
 
 
 (defn parse-classes-from-url [url] (parse-classes (io-helpers/get-dom url)))
