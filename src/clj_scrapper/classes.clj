@@ -28,13 +28,18 @@
        "&p_col_code=" code
        "&p_sex_code=" (sex {:male 11, :female 12})))
 
-(declare parse-class merge-days-classes)
+;; the current department during parsing
+;; see [[set-department]] for explanation!
+(def *current-department* (ThreadLocal.))
+
+(declare parse-class merge-days-classes set-department!)
 (defn parse-classes
   [dom]
   (->>
     ;; Note: This will contain elements outside the table
     (html/select dom [:tr])
     (map :content)
+    (map set-department!);; see [[set-department!]] for explantion
     ;; 27 is the golden number! jk. rows
     ;; with 27 thingies are classes, others are table headers
     (filter #(= 27 (count %)))
@@ -51,6 +56,32 @@
     ;; flattens the [({...}), ({...})] to [{...}, {...}]
     flatten))
 
+(declare nth-html department)
+
+;; HTML looks like this:
+; Page: 1
+; College: Engineering | Department: Electrical Engineering <- 2 columns
+; Subjects | Dr |  Time | ........ | 27 cols
+; Circuits | ...| ..... | ........ | 27 cols
+; .......................
+; Page: 2
+; College: Engineering | Department: Chemical Engineering <- 2 columns
+;; ...........
+; So, we parse in one by one, when we meet
+; a Department we 'save' it into `*current-department*`,
+(defn- set-department!; القسم
+  [row]; the row might not contain the department
+  (if (not= 27 (count row)); so we check first if it isn't a class
+    (let [department (-> (html/select row [:td :p :font])
+                         (nth-html 1 nil)
+                         department)]
+      (if (not= "" department) (.set *current-department* department))))
+  row)
+
+(defn- department
+  [text] ; القسم  : الدراسات الاكلينيكية
+  (s/trim (clojure.string/replace text #"القسم  :" "")))
+
 ; days are sets, so no need to worry about conflicts
 (defn- merge-days-classes;
   ([a] a)
@@ -58,9 +89,11 @@
 
 (defn- html-text-trim [dom] (s/trim (html/text dom)))
 (defn- nth-html
-  "Trimmed text nth node as text"
-  [dom n]
-  (html-text-trim (nth dom n)))
+  "Returns the text at the index of nth node.
+  nth-html throws an exception unless not-found is supplied."
+  ([dom n] (html-text-trim (nth dom n)))
+  ([dom n not-found] (html-text-trim (nth dom n not-found))))
+
 (defn- code [text] (clojure.string/replace text "-" ""))
 (defn- timestamp
   "Returns timestamp in 0000 form, e.g. 1430 (i.e. 2:30pm)
@@ -105,7 +138,8 @@
         time             (str starting-time "-" ending-time)
         allowed-colleges (allowed   (nth-html class-dom 11))
         allowed-majors   (allowed   (nth-html class-dom 12))
-        available     (available (nth-html class-dom 3))]
+        available        (available (nth-html class-dom 3))
+        department       (.get *current-department*)]
     ;;RANT! Table headers are assigned the same as table data
     ;; website dev should have used "theader" :(
     ;;
@@ -122,7 +156,8 @@
        :time              time
        :allowed-colleges  allowed-colleges,
        :allowed-majors    allowed-majors,
-       :available      available})))
+       :available         available
+       :department        department})))
 
 
 (defn parse-classes-from-url [url] (parse-classes (io-helpers/get-dom url)))
