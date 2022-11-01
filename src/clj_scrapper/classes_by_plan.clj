@@ -16,9 +16,9 @@
 (defn -main
   " ... "
   [& _args]
-  (download>seed>save "./output/by_plan/male/" :male)
-  (download>seed>save "./output/by_plan/female/" :female)
-  (spit               "./output/by_plan/metadata.json" (json/write-str (settings/generate-metadata)))
+  (download>seed>save                   "./output/by_plan/male/" :male)
+  (download>seed>save                   "./output/by_plan/female/" :female)
+  (io-helpers/save-data-to-path-as-json "./output/by_plan/metadata.json" (settings/generate-metadata))
   (shutdown-agents))
 
 (defn download>seed>save

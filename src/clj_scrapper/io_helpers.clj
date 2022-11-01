@@ -17,7 +17,7 @@
          (catch java.io.FileNotFoundException _
            ; if not cached, cache it...
            (do (io/make-parents tmp_path); mkdir -p
-               (spit tmp_path (slurp url));
+               (spit tmp_path (slurp url) :encoding "UTF-8");
                (println "Wasn't cached:(")
                ; ...and re-slurp it.
                (slurp tmp_path))))))
@@ -35,7 +35,10 @@
   ; mkdir -p
   (io/make-parents output_path)
   (println "Saving to" output_path)
-  (spit output_path (json/write-str plan)))
+  (spit output_path
+        (json/write-str plan :escape-unicode false)
+        :encoding
+        "UTF-8"))
 
 ;; (defn save-data-to-path-as-json
 ;;   [output_paths plans]
