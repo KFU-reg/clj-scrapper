@@ -130,6 +130,7 @@
         code             (code (nth-html class-dom 0))
         crn              (nth-html class-dom 1)
         name             (nth-html class-dom 4) ;i.e class name
+        credits          (nth-html class-dom 5)
         section          (nth-html class-dom 2)
         instructor       (nth-html class-dom 9)
         days             (days      (nth-html class-dom 6))
@@ -150,10 +151,11 @@
       {:code              code,
        :crn               crn,
        :name              name,
+       :credits           credits,
        :section           section,
        :instructor        instructor,
        :days              days,
-       :time              time
+       :time              time,
        :allowed-colleges  allowed-colleges,
        :allowed-majors    allowed-majors,
        :available         available
