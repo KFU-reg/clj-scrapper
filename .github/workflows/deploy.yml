@@ -23,7 +23,7 @@ jobs:
         run: lein -v
 
       - name: Clean Cache
-        run: rm  -r output/cache
+        run: rm  -fr output/cache
 
       - name: Run Scrapper
         run: lein classes-by-college
