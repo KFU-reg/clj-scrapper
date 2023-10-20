@@ -4,6 +4,9 @@ jobs:
   Clean-Cache:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@12.1
         with:
@@ -33,7 +36,7 @@ jobs:
         env:
             API_TOKEN_GITHUB: ${{ secrets.GIT_PAT_TOKEN }}
         with:
-            user-name: "github-actions[bot]"
+            user-name: "stadial"
             user-email: github-actions[bot]@users.noreply.github.com
             source-directory: "output/by_college"
             destination-github-username: "KFU-reg"
