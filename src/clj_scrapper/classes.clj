@@ -24,7 +24,7 @@
   (str base-url
        "p_trm_code="
        current-year
-       (current-semster {:sem1 10, :sem2 20, :summer 30})
+       (current-semster {:sem1 10, :sem2 20, :sem3 25, :summer 30})
        "&p_col_code=" code
        "&p_sex_code=" (sex {:male 11, :female 12})))
 
