@@ -31,6 +31,9 @@ jobs:
       - name: Run Scrapper
         run: lein classes-by-college
 
+      - name: Clean Cache
+        run: rm  -fr output/cache
+
       - name: Pushes to Repository with 
         uses: tech-thinker/push-to-repo@main
         env:
