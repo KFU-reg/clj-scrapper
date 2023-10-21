@@ -38,7 +38,7 @@ jobs:
         with:
             user-name: "stadial"
             user-email: github-actions[bot]@users.noreply.github.com
-            source-directory: "output/by_college"
+            source-directory: "output"
             destination-github-username: "KFU-reg"
             destination-repository-name: "database"
             target-branch: master
