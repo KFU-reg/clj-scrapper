@@ -3,7 +3,7 @@
             [clj-scrapper.io-helpers :as io-helpers]
             [clojure.string :as s]))
 
-(def base-url "https://banner.kfu.edu.sa:7710/KFU/ws?")
+(def base-url "https://ssb-ar.kfu.edu.sa/PROD_ar/ws?")
 (def current-year 1443)
 (def current-semster 1443)
 
