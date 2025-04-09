@@ -1,8 +1,8 @@
 (ns clj-scrapper.settings
   (:require [clj-scrapper.classes :as classes]))
 
-(def current-year 1446)
-(def current-sem :sem2)
+(def current-year 1447)
+(def current-sem :sem1)
 
 (def ^:private ^:const department-numbers
   {"10" "الطب",
