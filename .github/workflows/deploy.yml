@@ -45,3 +45,6 @@ jobs:
             destination-github-username: "KFU-reg"
             destination-repository-name: "database"
             target-branch: master
+      - name: Print error details
+        run: cat /tmp/clojure-*.edn
+        if: failure()
